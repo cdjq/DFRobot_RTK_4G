@@ -11,7 +11,7 @@
 
 ## 产品链接(https://www.dfrobot.com.cn)
 
-    SKU：TEL0171-LoRa
+    SKU：TEL0171-4G
 
 ## 目录
 
@@ -169,6 +169,55 @@ python3 get_gnss.py
       @brief 获取所有的gnss数据
       @return gnss all data
     '''
+
+  def set_user_name(self, name):
+    '''!
+      @brief 设置用户名
+      @param name 用户名
+    '''
+
+  def set_user_password(self, password):
+    '''!
+      @brief 设置用户密码
+      @param password 用户密码
+    '''
+
+  def set_server_addr(self, addr):
+    '''!
+      @brief 设置服务器地址
+      @param addr 服务器IP地址
+    '''
+
+  def set_mount_point(self, point):
+    '''!
+      @brief 设置挂载点
+      @param point 挂载点
+    '''
+
+  def set_port(self, port):
+    '''!
+      @brief 设置ip端口
+      @param port 端口
+    '''
+
+  def connect(self):
+    '''!
+      @brief 连接4g 服务器
+      @return CONNECT_SUCCESS 连接成功
+              CONNECT_TIMEOUT 连接超时
+              CONNECT_ERROR 连接错误
+    '''
+
+  def reconnect(self):
+    '''
+      @brief 重连服务器
+    '''
+
+  def get_connect_state(self):
+    '''!
+      @brief 获取连接状态
+      @return True if connected, else False
+    '''
 ```
 
 ## 兼容性
@@ -191,7 +240,7 @@ python3 get_gnss.py
 
 ## 历史
 
-- 2024/08/14 - V1.0.0 版本
+- 2024/10/28 - V0.1.0 版本
 
 ## 创作者
 

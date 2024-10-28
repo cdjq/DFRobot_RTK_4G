@@ -9,7 +9,7 @@
 
 ## 产品链接(https://www.dfrobot.com.cn)
 
-    SKU：TEL0171
+    SKU：TEL0171-4G
 
 ## 目录
 
@@ -129,11 +129,13 @@
   double getDifTime(void);
 
 /**
- * @fn disablePower
- * @brief 失能gnss的电源
- * @return null
+ * @fn getDataFlush
+ * @brief 获取数据是否刷新
+ * @return bool
+ * @retval True 数据刷新
+ * @retval false 数据没有刷新
  */
-void disablePower(void);
+  bool getDataFlush(void);
 
 /**
  * @fn setModule
@@ -265,7 +267,6 @@ void disablePower(void);
  */
   bool getConnectState(void);
 
-
 /**
  * @fn reConnect
  * @brief 重新连接
@@ -295,7 +296,7 @@ Micro:bit          |      √       | nonsupport uart |             |
 
 
 ## 历史
-- 2023/3/27 - V0.1.0 版本
+- 2024/10/28 - V0.1.0 版本
 
 ## 创作者
 

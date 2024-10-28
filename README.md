@@ -10,7 +10,7 @@ The mobile end of the kit supports I2C/UART output, and is compatible with Ardui
 
 ## Product Link(https://www.dfrobot.com)
 
-    SKU：TEL0171
+    SKU：TEL0171-4G
 
 ## Table of Contents
 
@@ -128,6 +128,15 @@ There are two methods for using this library:<br>
  * @return double 
  */
   double getDifTime(void);
+
+/**
+ * @fn getDataFlush
+ * @brief Gets whether data is refreshed
+ * @return bool
+ * @retval True if data is refreshed
+ * @retval false if data is not refreshed
+ */
+  bool getDataFlush(void);
 
 /**
  * @fn setModule
@@ -290,7 +299,7 @@ Micro:bit          |      √       | nonsupport uart |             |
 
 ## History
 
-- 2024/03/26 - Version V0.1.0 released.
+- 2024/10/28 - Version V0.1.0 released.
 
 ## Credits
 

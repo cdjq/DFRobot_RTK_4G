@@ -9,7 +9,7 @@ The mobile end of the kit supports I2C/UART output, and is compatible with Ardui
 
 ## Product Link(https://www.dfrobot.com)
 
-    SKU：TEL0171-LoRa
+    SKU：TEL0171-4G
 
 ## Table of Contents
 
@@ -153,12 +153,60 @@ python3 get_gnss.py
       @param mode
       @return char* 
     '''
-    
 
   def get_all_gnss(self):
     '''!
       @brief Get all GNSS data
       @return gnss all data
+    '''
+
+  def set_user_name(self, name):
+    '''!
+      @brief Set user name
+      @param name user name
+    '''
+
+  def set_user_password(self, password):
+    '''!
+      @brief Set user password
+      @param password user password
+    '''
+  
+  def set_server_addr(self, addr):
+    '''!
+      @brief Set server address
+      @param addr server address
+    '''
+
+  def set_mount_point(self, point):
+    '''!
+      @brief Set mount point
+      @param point mount point
+    '''
+
+  def set_port(self, port):
+    '''!
+      @brief Set port number
+      @param port port number
+    '''
+
+  def connect(self):
+    '''!
+      @brief Attempt to connect to the server
+      @return CONNECT_SUCCESS if the connection is established,
+              CONNECT_TIMEOUT if the connection times out,
+              CONNECT_ERROR if there is an unknown error.
+    '''
+
+  def reconnect(self):
+    '''
+      @brief Reconnect to the server by resetting connection parameters
+    '''
+
+  def get_connect_state(self):
+    '''!
+      @brief Get connect state
+      @return True if connected, else False
     '''
 ```
 
@@ -182,7 +230,7 @@ python3 get_gnss.py
 
 ## History
 
-- 2024/08/14 - Version 1.0.0 released.
+- 2024/10/28 - Version 0.1.0 released.
 
 ## Credits
 

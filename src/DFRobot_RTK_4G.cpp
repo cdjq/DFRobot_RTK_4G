@@ -679,18 +679,22 @@ bool DFRobot_RTK_4G_UART::begin()
 
 void DFRobot_RTK_4G_UART::writeReg(uint8_t reg, uint8_t *data, uint8_t len)
 {
+  _serial->write(0x55);
   _serial->write(reg | 0x80);
   for(uint8_t i = 0; i < len; i++){
     _serial->write(data[i]);
   }
+  _serial->write(0xAA);
   delay(5);
 }
 
 int16_t DFRobot_RTK_4G_UART::readReg(uint8_t reg, uint8_t *data, uint8_t len)
 {
   uint8_t i = 0;
+  _serial->write(0x55);
   _serial->write((uint8_t)reg & 0x7F);
   _serial->write(len);
+  _serial->write(0xAA);
   uint32_t nowtime = millis();
   while(millis() - nowtime < TIME_OUT){
     while(_serial->available() > 0){

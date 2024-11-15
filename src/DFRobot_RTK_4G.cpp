@@ -151,7 +151,7 @@ void DFRobot_RTK_4G::setModule(eModuleMode_t mode)
     delay(50);
     _sendData[0] = mode;
     writeReg(REG_OPERATION, _sendData, 1);
-    if(mode == module_4g){
+    if(mode == eMoudle4g){
       delay(3000);
     }else{
       delay(1000);
@@ -203,29 +203,25 @@ uint32_t DFRobot_RTK_4G::get4gBaud(void)
 
 uint32_t DFRobot_RTK_4G::baudMatch(eModuleBaud_t baud)
 {
-  if(baud == baud_2400){
-    return 2400;
-  }else if(baud == baud_4800){
-    return 4800;
-  }else if(baud == baud_9600){
+  if(baud == eBaud9600){
     return 9600;
-  }else if(baud == baud_14400){
+  }else if(baud == eBaud14400){
     return 14400;
-  }else if(baud == baud_19200){
+  }else if(baud == eBaud19200){
     return 19200;
-  }else if(baud == baud_38400){
+  }else if(baud == eBaud38400){
     return 38400;
-  }else if(baud == baud_56000){
+  }else if(baud == eBaud56000){
     return 56000;
-  }else if(baud == baud_57600){
+  }else if(baud == eBaud57600){
     return 57600;
-  }else if(baud == baud_115200){
+  }else if(baud == eBaud115200){
     return 115200;
-  }else if(baud == baud_256000){
+  }else if(baud == eBaud256000){
     return 256000;
-  }else if(baud == baud_512000){
+  }else if(baud == eBaud512000){
     return 512000;
-  }else if(baud == baud_921600){
+  }else if(baud == eBaud921600){
     return 921600;
   }else{
     return 115200;
@@ -302,10 +298,10 @@ char * DFRobot_RTK_4G::getGnssMessage(eGnssData_t mode)
   memset(__sourceData.gll, 0, sizeof(__sourceData.gll));
   memset(__sourceData.vtg, 0, sizeof(__sourceData.vtg));
 
-  if(mode == gnGGA){
+  if(mode == eGGA){
     readReg(REG_GGA_LEN, &len, 1);
     if(len < sizeof(__sourceData.gga)){
-      if(uartI2CFlag == UART_FLAG) {
+      if(__uartI2CFlag == UART_FLAG) {
         readReg(REG_GGA_ALL, (uint8_t *)(__sourceData.gga), len);
       }else{
         while(len){
@@ -323,10 +319,10 @@ char * DFRobot_RTK_4G::getGnssMessage(eGnssData_t mode)
       }
     }
     return __sourceData.gga;
-  }else if (mode == gnRMC){
+  }else if (mode == eRMC){
     readReg(REG_RMC_LEN, &len, 1);
     if(len < sizeof(__sourceData.rmc)){
-      if(uartI2CFlag == UART_FLAG) {
+      if(__uartI2CFlag == UART_FLAG) {
         readReg(REG_RMC_ALL, (uint8_t *)(__sourceData.rmc), len);
       }else{
         while(len){
@@ -344,10 +340,10 @@ char * DFRobot_RTK_4G::getGnssMessage(eGnssData_t mode)
       }
     }
     return __sourceData.rmc;
-  }else if (mode == gnGLL){
+  }else if (mode == eGLL){
     readReg(REG_GLL_LEN, &len, 1);
     if(len < sizeof(__sourceData.gll)){
-      if(uartI2CFlag == UART_FLAG) {
+      if(__uartI2CFlag == UART_FLAG) {
         readReg(REG_GLL_ALL, (uint8_t *)(__sourceData.gll), len);
       }else{
         while(len){
@@ -365,10 +361,10 @@ char * DFRobot_RTK_4G::getGnssMessage(eGnssData_t mode)
       }
     }
     return __sourceData.gll;
-  }else{    //(mode == gnVTG){
+  }else{    //(mode == eVTG){
     readReg(REG_VTG_LEN, &len, 1);
     if(len < sizeof(__sourceData.vtg)){
-      if(uartI2CFlag == UART_FLAG) {
+      if(__uartI2CFlag == UART_FLAG) {
         readReg(REG_VTG_ALL, (uint8_t *)(__sourceData.vtg), len);
       }else{
         while(len){
@@ -395,6 +391,7 @@ uint16_t DFRobot_RTK_4G::getGnssLen(void)
   uint8_t _sendData[TEMP_LEN] = {0xAA};
   // enter all data mode
   writeReg(REG_ALL_MODE, _sendData, 1);
+  delay(10);
   while(1){
     readReg(REG_ALL_MODE, _sendData, 1);
     delay(100);
@@ -416,7 +413,7 @@ void DFRobot_RTK_4G::getAllGnss(void)
   uint16_t old_len = len;
   
   uint16_t i = 0;
-  if(uartI2CFlag == UART_FLAG) {
+  if(__uartI2CFlag == UART_FLAG) {
     uint8_t templen = len / 250;
     if(len % 250 != 0){
       templen += 1;
@@ -533,7 +530,7 @@ String DFRobot_RTK_4G::connect(void)
       result = CONNECT_SUCCESS;
       return result;
     }
-    delay(1000);
+    delay(2000);
     if(i >= 9){
       result = CONNECT_TIMEOUT;
       return result;
@@ -547,7 +544,7 @@ void DFRobot_RTK_4G::reConnect(void)
   uint8_t _sendData[TEMP_LEN]  = {0xaa};
   writeReg(REG_CONNECT, _sendData, 1);
   __connetState = 1;
-  if(uartI2CFlag == UART_FLAG){
+  if(__uartI2CFlag == UART_FLAG){
     delay(1000);
   }
 }
@@ -576,7 +573,7 @@ DFRobot_RTK_4G_I2C::DFRobot_RTK_4G_I2C(TwoWire *pWire, uint8_t addr)
 {
   _pWire = pWire;
   this->_I2C_addr = addr;
-  uartI2CFlag = I2C_FLAG;
+  __uartI2CFlag = I2C_FLAG;
 }
 
 bool DFRobot_RTK_4G_I2C::begin()
@@ -644,7 +641,7 @@ int16_t DFRobot_RTK_4G_I2C::readReg(uint8_t reg, uint8_t *data, uint8_t len)
   {
     this->_serial = sSerial;
     this->_baud = Baud;
-    uartI2CFlag = UART_FLAG;
+    __uartI2CFlag = UART_FLAG;
     _serial->begin(this->_baud);
   }
 #else
@@ -652,7 +649,7 @@ int16_t DFRobot_RTK_4G_I2C::readReg(uint8_t reg, uint8_t *data, uint8_t len)
   {
     this->_serial = hSerial;
     this->_baud = Baud;
-    uartI2CFlag = UART_FLAG;
+    __uartI2CFlag = UART_FLAG;
     this->_txpin = txpin;
     this->_rxpin = rxpin;
   }
@@ -669,6 +666,10 @@ bool DFRobot_RTK_4G_UART::begin()
   #else
     _serial->begin(this->_baud);  // M0 cannot create a begin in a construct
   #endif
+  
+  while(_serial->available()){
+    _serial->read();
+  }
   this->readReg (REG_I2C_ID, _sendData, 1);
   if(_sendData[0] == DEVICE_ADDR){
     return true;
@@ -695,6 +696,7 @@ int16_t DFRobot_RTK_4G_UART::readReg(uint8_t reg, uint8_t *data, uint8_t len)
   _serial->write((uint8_t)reg & 0x7F);
   _serial->write(len);
   _serial->write(0xAA);
+  delay(5);
   uint32_t nowtime = millis();
   while(millis() - nowtime < TIME_OUT){
     while(_serial->available() > 0){

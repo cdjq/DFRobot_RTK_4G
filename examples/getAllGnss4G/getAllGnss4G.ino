@@ -58,8 +58,8 @@ void setup()
   }
   Serial.println("Device connected !");
 
-  rtk.setModule(module_4g);
-  while(rtk.getModule() != module_4g){
+  rtk.setModule(eMoudle4g);
+  while(rtk.getModule() != eMoudle4g){
     Serial.println("Module type is not 4G!  please wait!");
     delay(1000);
   }

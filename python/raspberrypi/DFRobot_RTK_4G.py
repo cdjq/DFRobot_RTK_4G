@@ -107,7 +107,8 @@ GNGGA_MODE = 0
 GNRMC_MODE = 1
 GNGLL_MODE = 2
 GNVTG_MODE = 3
-CONNECT_START = 0x55
+CONNECT_START = 0xaa
+CONNECT_SUC   = 0x55
 
 
 class struct_utc_tim:
@@ -226,6 +227,7 @@ class DFRobot_RTK_4G(object):
       lat_lon.lat_direction = chr(rslt[5])
       lat_lon.latitude = lat_lon.lat_dd*100.0 + lat_lon.lat_mm + lat_lon.lat_mmmmm/100000.0
       lat_lon.latitude_degree = lat_lon.lat_dd + lat_lon.lat_mm/60.0 + lat_lon.lat_mmmmm/100000.0/60.0
+      lat_lon.latitude_degree = round(lat_lon.latitude_degree, 7)
     return lat_lon
 
   def get_lon(self):
@@ -241,6 +243,7 @@ class DFRobot_RTK_4G(object):
       lat_lon.lon_direction = chr(rslt[5])
       lat_lon.lonitude = lat_lon.lon_ddd*100.0 + lat_lon.lon_mm + lat_lon.lon_mmmmm/100000.0
       lat_lon.lonitude_degree = lat_lon.lon_ddd + lat_lon.lon_mm/60.0 + lat_lon.lon_mmmmm/100000.0/60.0
+      lat_lon.lonitude_degree = round(lat_lon.lonitude_degree, 7)
     return lat_lon
 
   def get_num_sta_used(self):
@@ -515,7 +518,8 @@ class DFRobot_RTK_4G(object):
       @brief Set server address
       @param addr server address
     '''
-    send = [1]
+    writelen = len(addr)&0x00ff
+    send = [writelen]
     self.write_reg(REG_SERVER_ADDR_LEN, send)
     time.sleep(0.01)
     # Convert name to byte array and send it
@@ -529,7 +533,8 @@ class DFRobot_RTK_4G(object):
       @brief Set mount point
       @param point mount point
     '''
-    send = [1]
+    writelen = len(point)&0x00ff
+    send = [writelen]
     self.write_reg(REG_MOUNT_POINT_LEN, send)
     time.sleep(0.01)
     # Convert name to byte array and send it
@@ -542,7 +547,7 @@ class DFRobot_RTK_4G(object):
       @brief Set port number
       @param port port number
     '''
-    len_high = (port<<8)&0x00ff
+    len_high = (port>>8)&0x00ff
     len_low  = (port)&0x00ff
     send = [len_high, len_low]
     self.write_reg(REG_PORT_H, send)
@@ -560,9 +565,9 @@ class DFRobot_RTK_4G(object):
     time.sleep(0.5)
     for i in range(10):
       _send_data = self.read_reg(REG_CONNECT_STATE, 1)
-      if _send_data[0] == CONNECT_START:
+      if _send_data[0] == CONNECT_SUC:
         return CONNECT_SUCCESS
-      time.sleep(1)
+      time.sleep(2)
       if i >= 9:
         return CONNECT_TIMEOUT
     return CONNECT_ERROR
@@ -603,8 +608,6 @@ class DFRobot_RTK_4G(object):
     length = self.get_gnss_len()
     if length == 0:
       return all_data
-    len1 = length // 32
-    len2 = length % 32
     time.sleep(0.1)
     if self.__uart_i2c == UART_MODE:
       len1 = length // 250
@@ -614,9 +617,9 @@ class DFRobot_RTK_4G(object):
         rslt = self.read_reg(REG_ALL, read_len)
         all_data.extend(rslt)
         writelen += 250
-        time.sleep(0.001)
-      time.sleep(0.05)
     else:
+      len1 = length // 32
+      len2 = length % 32
       for num in range(len1 + 1):
         send[0] = (writelen >> 8) & 0x00FF
         send[1] = writelen & 0x00FF
@@ -643,7 +646,7 @@ class DFRobot_RTK_4G_I2C(DFRobot_RTK_4G):
       except:
         self._error_handling()
       if self._connect > self.ERROR_COUNT:
-        raise ValueError("Please check the rtk_lora connection or Reconnection sensor!!!")
+        raise ValueError("Please check the rtk_4g connection or Reconnection sensor!!!")
 
   def read_reg(self, reg, len):
     self._connect = 0
@@ -654,7 +657,7 @@ class DFRobot_RTK_4G_I2C(DFRobot_RTK_4G):
       except:
         result = self._error_handling(len)
       if self._connect > self.ERROR_COUNT:
-        raise ValueError("Please check the rtk_lora connection or Reconnection sensor!!!")
+        raise ValueError("Please check the rtk_4g connection or Reconnection sensor!!!")
 
   def _error_handling(self, lens=0):
     result = [0] * lens
@@ -676,23 +679,27 @@ class DFRobot_RTK_4G_UART(DFRobot_RTK_4G):
     self.ser.write(send)
     time.sleep(0.005)
     return
-
+    
   def read_reg(self, reg, length):
     send = [0x55, reg & 0x7f, length, 0xAA]
     self.ser.write(bytearray(send))
-    time.sleep(0.03)
-    recv = [0] * length
+    recv = []
     timenow = time.time()
-    while (time.time() - timenow) <= 1:
-      count = self.ser.inWaiting()
-      if count != 0:
-        recv = self.ser.read(count)
-        self.ser.flushInput()
-        if sys.version_info[0] < 3:
-          recv = [ord(c) for c in recv]
-        else:
-          recv = list(recv)
-        return recv
-    return recv
-
+    timeout = 1
+    timeout_time = timenow + timeout
+    
+    while len(recv) < length and time.time() < timeout_time:
+      count = self.ser.inWaiting()  
+      if count > 0:
+        data = self.ser.read(min(count, length - len(recv)))
+        recv.extend(data)        
+        time.sleep(0.005)
+    if len(recv) == length:
+      if sys.version_info[0] < 3:
+        return [ord(c) for c in recv]
+      else:
+        return list(recv)
+    else:
+      print("Timeout: Not enough data read.")
+      return recv
 

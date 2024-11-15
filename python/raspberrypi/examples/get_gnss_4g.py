@@ -32,10 +32,10 @@ elif ctype == UART_MODE:
 utc = struct_utc_tim()
 lat_lon = struct_lat_lon()
 
-user_name = "chwj068746"
-user_password = "16409678"
-server_addr = "119.3.136.126"
-mount_point = "RTCM33"
+user_name = "cpef1449"
+user_password = "yd580668"
+server_addr = "120.253.239.161"
+mount_point = "RTCM33_GRCEJ"
 port = 8002
 
 def setup():

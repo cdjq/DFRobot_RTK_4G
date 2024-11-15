@@ -48,8 +48,8 @@ void setup()
     delay(1000);
   }
   Serial.println("Device connected !");
-  rtk.setModule(module_4g);
-  while(rtk.getModule() != module_4g){
+  rtk.setModule(eMoudle4g);
+  while(rtk.getModule() != eMoudle4g){
     Serial.println("Module type is not 4G!  please wait!");
     delay(1000);
   }
@@ -126,10 +126,10 @@ void loop()
     Serial.println(siteID);
     Serial.print("diftime = ");
     Serial.println(diftime);
-    Serial.println(rtk.getGnssMessage(gnGGA));
-    Serial.println(rtk.getGnssMessage(gnRMC));
-    Serial.println(rtk.getGnssMessage(gnGLL));
-    Serial.println(rtk.getGnssMessage(gnVTG));
+    Serial.println(rtk.getGnssMessage(eGGA));
+    Serial.println(rtk.getGnssMessage(eRMC));
+    Serial.println(rtk.getGnssMessage(eGLL));
+    Serial.println(rtk.getGnssMessage(eVTG));
   }
   if(!rtk.getConnectState()){
     Serial.println("restart connect .....");

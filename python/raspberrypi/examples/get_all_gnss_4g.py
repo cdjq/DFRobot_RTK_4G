@@ -29,8 +29,8 @@ if ctype == I2C_MODE:
 elif ctype == UART_MODE:
   rtk = DFRobot_RTK_4G_UART(115200)
 
-user_name = "chwj068746"
-user_password = "16409678"
+user_name = "chwj163776"
+user_password = "40497291"
 server_addr = "119.3.136.126"
 mount_point = "RTCM33"
 port = 8002
@@ -62,7 +62,7 @@ def loop():
   if not rtk.get_connect_state():
     print("restart connect .....")
     rtk.reconnect()
-  time.sleep(0.5)
+    time.sleep(0.5)
 
 if __name__ == "__main__":
   setup()

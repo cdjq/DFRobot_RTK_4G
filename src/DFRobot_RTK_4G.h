@@ -57,10 +57,10 @@ typedef struct {
  * @brief Types of gnss data
  */
 typedef enum {
-  gnGGA,
-  gnRMC,
-  gnGLL,
-  gnVTG,
+  eGGA,
+  eRMC,
+  eGLL,
+  eVTG,
 }eGnssData_t;
 
 /**
@@ -68,8 +68,8 @@ typedef enum {
  * @brief sensor work mode
  */
 typedef enum {
-  module_4g = 20,
-  module_lora = 10,
+  eMoudle4g = 20,
+  eMoudleLora = 10,
 }eModuleMode_t;
 
 /**
@@ -77,18 +77,16 @@ typedef enum {
  * @brief sensor work baud rate
  */
 typedef enum  {
-  baud_2400 = 0,
-  baud_4800 = 1,
-  baud_9600 = 2,
-  baud_14400 = 3,
-  baud_19200 = 4,
-  baud_38400 = 5,
-  baud_56000 = 6,
-  baud_57600 = 7,
-  baud_115200 = 8,
-  baud_256000 = 9,
-  baud_512000 = 10,
-  baud_921600 = 11,
+  eBaud9600 = 2,
+  eBaud14400 = 3,
+  eBaud19200 = 4,
+  eBaud38400 = 5,
+  eBaud56000 = 6,
+  eBaud57600 = 7,
+  eBaud115200 = 8,
+  eBaud256000 = 9,
+  eBaud512000 = 10,
+  eBaud921600 = 11,
 }eModuleBaud_t;
 
 /**
@@ -188,7 +186,7 @@ public:
   #define TEMP_LEN 20
   DFRobot_RTK_4G();
   ~DFRobot_RTK_4G();
-  uint8_t  uartI2CFlag = 0;
+  uint8_t  __uartI2CFlag = 0;
 
 /**
  * @fn getUTC
@@ -440,7 +438,6 @@ public:
   void (* callback)(char *data, uint8_t len);
 private:
   uint8_t  _addr;
-  uint8_t  _M_Flag = 0;
   sSource_t __sourceData;
   uint8_t __connetState = 0;
   uint32_t baudMatch(eModuleBaud_t baud);

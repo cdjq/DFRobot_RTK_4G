@@ -700,6 +700,7 @@ class DFRobot_RTK_4G_UART(DFRobot_RTK_4G):
       else:
         return list(recv)
     else:
+      _recv = [0]*length
       print("Timeout: Not enough data read.")
-      return recv
+      return _recv
 

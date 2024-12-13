@@ -645,7 +645,7 @@ int16_t DFRobot_RTK_4G_I2C::readReg(uint8_t reg, uint8_t *data, uint8_t len)
     _serial->begin(this->_baud);
   }
 #else
-  DFRobot_RTK_4G_UART::DFRobot_RTK_4G_UART(HardwareSerial *hSerial, uint32_t Baud ,uint8_t txpin, uint8_t rxpin)
+  DFRobot_RTK_4G_UART::DFRobot_RTK_4G_UART(HardwareSerial *hSerial, uint32_t Baud ,uint8_t rxpin, uint8_t txpin)
   {
     this->_serial = hSerial;
     this->_baud = Baud;
